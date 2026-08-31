@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: chatbot-app
+
+  datasource:
+    url: jdbc:h2:file:./data/chatbotdb;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ${H2_DB_PASSWORD_MARKET}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+app:
+  admin:
+    username: ${ADMIN_USERNAME_MARKET}
+    password: ${ADMIN_PASSWORD_MARKET}
+  jwt:
+    secret: ${TOKEN_MASTER_MARKET}
+    expiration-ms: 86400000
+  ai:
+    provider: deepseek
+    base-url: https://api.deepseek.com
+    model: deepseek-chat
+    api-key: ${DEEPSEEK_API_KEY}
+  fetch:
+    max-sites-per-query: 5
+    timeout-ms: 20000
+    max-chars-per-site: 4000
+  semantic-cache:
+    # Medido com o modelo real (paraphrase-multilingual-MiniLM-L12-v2):
+    # parafraseio genuíno ("quanto custa o arroz" vs "qual o preço do arroz
+    # hoje") deu ~0.725 de similaridade; mensagem não-relacionada ("boa
+    # noite") deu ~0.048. 0.90 nunca bateria cache na prática — 0.70 cobre o
+    # caso real testado com folga sobre o ruído. Ver memory/DECISIONS.md #19.
+    threshold: 0.70

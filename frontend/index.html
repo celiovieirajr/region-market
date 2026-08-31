@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatBot IA - Chat</title>
+    <script>
+        (function () {
+            var stored = localStorage.getItem('chatbot_theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (stored ? stored === 'dark' : prefersDark) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' };</script>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col transition-colors">
+
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center">
+                    <span class="text-white text-lg">🤖</span>
+                </div>
+                <div>
+                    <h1 class="font-semibold text-slate-800 dark:text-slate-100 leading-tight">ChatBot IA</h1>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 leading-tight">
+                        <span id="guest-label">Modo visitante — envie uma mensagem para criar sua conta grátis</span>
+                        <span id="user-label" class="hidden">Logado como <span id="current-user" class="font-medium"></span></span>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <select id="city-select" title="Sua cidade"
+                        class="hidden text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">Selecionar cidade</option>
+                </select>
+                <button id="theme-toggle" title="Alternar tema claro/escuro"
+                        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-lg">
+                    🌙
+                </button>
+                <a id="guest-login-link" href="/login.html" title="Já tenho conta"
+                   class="text-sm px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    Já tenho conta
+                </a>
+                <button id="clear-btn" title="Limpar contexto do chat"
+                        class="hidden text-sm px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    Limpar contexto
+                </button>
+                <a id="mural-link" href="/mural.html" title="Mural (changelog do sistema)"
+                   class="hidden w-9 h-9 flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-lg">
+                    📋
+                </a>
+                <a id="settings-link" href="/settings.html" title="Configurações"
+                   class="hidden w-9 h-9 flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-lg">
+                    ⚙️
+                </a>
+                <button id="logout-btn" title="Sair"
+                        class="hidden text-sm px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 transition-colors">
+                    Sair
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 flex flex-col">
+        <div id="messages" class="flex-1 overflow-y-auto space-y-4 pb-4"></div>
+
+        <div id="typing-indicator" class="hidden text-sm text-slate-400 dark:text-slate-500 italic mb-2">IA está digitando...</div>
+
+        <form id="chat-form" class="flex items-center gap-2 border-t border-slate-200 dark:border-slate-700 pt-4">
+            <input id="message-input" type="text" autocomplete="off"
+                   class="flex-1 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                   placeholder="Digite sua mensagem..." required />
+            <button id="send-btn" type="submit"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full w-11 h-11 flex items-center justify-center transition-colors">
+                <span>➤</span>
+            </button>
+        </form>
+    </main>
+
+    <div id="register-modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm p-6">
+            <div class="text-center mb-5">
+                <div class="mx-auto w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center mb-2">
+                    <span class="text-white text-xl">🤖</span>
+                </div>
+                <h2 class="font-bold text-slate-800 dark:text-slate-100 text-lg">Crie sua conta grátis</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Para continuar a conversa, crie uma conta rápida e gratuita.</p>
+            </div>
+
+            <form id="register-form" class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="register-username">Usuário</label>
+                    <input id="register-username" type="text" autocomplete="username"
+                           class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                           placeholder="seu_usuario" required />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="register-password">Senha</label>
+                    <input id="register-password" type="password" autocomplete="new-password"
+                           class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                           placeholder="mínimo 6 caracteres" required />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" for="register-password-confirm">Confirmar senha</label>
+                    <input id="register-password-confirm" type="password" autocomplete="new-password"
+                           class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                           placeholder="repita a senha" required />
+                </div>
+
+                <p id="register-error" class="text-red-600 dark:text-red-400 text-sm hidden"></p>
+
+                <button id="register-btn" type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg py-2.5 transition-colors">
+                    Criar conta e enviar
+                </button>
+                <button id="register-cancel-btn" type="button"
+                        class="w-full text-slate-500 dark:text-slate-400 text-sm py-1.5 hover:text-slate-700 dark:hover:text-slate-200">
+                    Cancelar
+                </button>
+            </form>
+
+            <p class="text-sm text-center mt-4 text-slate-600 dark:text-slate-400">
+                Já tem conta?
+                <a href="/login.html" class="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">Entrar</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="clear-confirm-modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm p-6">
+            <h2 class="font-bold text-slate-800 dark:text-slate-100 text-lg mb-2">Limpar contexto do chat?</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mb-5">
+                Todo o histórico da conversa será apagado permanentemente. Essa ação não pode ser desfeita.
+            </p>
+            <div class="flex gap-2">
+                <button id="clear-cancel-btn" type="button"
+                        class="flex-1 text-slate-600 dark:text-slate-300 text-sm font-medium py-2 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    Cancelar
+                </button>
+                <button id="clear-confirm-btn" type="button"
+                        class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2 rounded-lg transition-colors">
+                    Limpar contexto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/model/apiModel.js"></script>
+    <script src="js/view/chatView.js"></script>
+    <script src="js/view/registerView.js"></script>
+    <script src="js/controller/themeController.js"></script>
+    <script src="js/controller/chatController.js"></script>
+</body>
+</html>

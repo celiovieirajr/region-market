@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-create-semantic-query-cache-table
+      author: junior.vieira
+      changes:
+        - createTable:
+            tableName: tb_semantic_query_cache
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: mensagem_normalizada
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: embedding
+                  type: CLOB
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_produto_query
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - column:
+                  name: termo
+                  type: VARCHAR(200)
+              - column:
+                  name: hits
+                  type: INT
+                  defaultValueNumeric: 1
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_used_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false

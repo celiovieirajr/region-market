@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatBot IA - Configurações</title>
+    <script>
+        (function () {
+            var stored = localStorage.getItem('chatbot_theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (stored ? stored === 'dark' : prefersDark) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' };</script>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col transition-colors">
+
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center">
+                    <span class="text-white text-lg">⚙️</span>
+                </div>
+                <div>
+                    <h1 class="font-semibold text-slate-800 dark:text-slate-100 leading-tight">Configurações</h1>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 leading-tight">Logado como <span id="current-user" class="font-medium"></span></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" title="Alternar tema claro/escuro"
+                        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-lg">
+                    🌙
+                </button>
+                <a href="/index.html" title="Voltar ao chat"
+                   class="text-sm px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    ← Voltar ao chat
+                </a>
+                <button id="logout-btn" title="Sair"
+                        class="text-sm px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 transition-colors">
+                    Sair
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 space-y-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h2 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">Sites por cidade</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                Cadastre os sites (mercados, farmácias, postos etc.) de cada cidade. Quando você
+                perguntar algo mencionando a cidade no chat, a IA vai ler esses sites para te ajudar a responder.
+            </p>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mb-4">
+                💡 Se o site tiver busca por produto, use <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">{termo}</code>
+                no lugar do termo na URL — ex: <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">https://loja.com/busca/{termo}</code>.
+                A IA descobre o produto perguntado e substitui automaticamente antes de abrir o site.
+                Sem o placeholder, o site é tratado como referência estática (sempre a mesma URL).
+            </p>
+
+            <form id="source-form" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input id="source-city" type="text" placeholder="Cidade (ex: Fortaleza)"
+                       class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                <input id="source-label" type="text" placeholder="Nome do site (ex: Amigão)"
+                       class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                <input id="source-url" type="text" placeholder="https://loja.com/busca/{termo}"
+                       class="rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:col-span-2" required />
+                <button type="submit"
+                        class="sm:col-span-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg py-2 transition-colors">
+                    Adicionar site
+                </button>
+            </form>
+
+            <p id="source-error" class="text-red-600 dark:text-red-400 text-sm hidden mt-2"></p>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">Sites cadastrados (agrupados por cidade)</h3>
+            <div id="source-list" class="space-y-4"></div>
+        </div>
+    </main>
+
+    <script src="js/model/apiModel.js"></script>
+    <script src="js/view/settingsView.js"></script>
+    <script src="js/controller/themeController.js"></script>
+    <script src="js/controller/settingsController.js"></script>
+</body>
+</html>

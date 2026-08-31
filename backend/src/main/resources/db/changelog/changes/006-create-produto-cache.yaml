@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-create-produto-cache-table
+      author: junior.vieira
+      changes:
+        - createTable:
+            tableName: tb_produto_cache
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: city_source_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_produto_cache_city_source
+                    references: city_sources(id)
+              - column:
+                  name: termo_busca
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nome_produto
+                  type: VARCHAR(300)
+              - column:
+                  name: preco
+                  type: DECIMAL(10,2)
+              - column:
+                  name: categoria
+                  type: VARCHAR(200)
+              - column:
+                  name: loja
+                  type: VARCHAR(150)
+              - column:
+                  name: url_origem
+                  type: VARCHAR(500)
+              - column:
+                  name: capturado_em
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_produto_cache_source_termo
+            tableName: tb_produto_cache
+            columns:
+              - column:
+                  name: city_source_id
+              - column:
+                  name: termo_busca

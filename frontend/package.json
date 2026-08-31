@@ -1,0 +1,9 @@
+{
+  "name": "chatbot-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend estático (HTML/CSS/JS) do ChatBot IA, servido separado do backend Spring Boot",
+  "scripts": {
+    "start": "npx --yes serve . -l 5500"
+  }
+}

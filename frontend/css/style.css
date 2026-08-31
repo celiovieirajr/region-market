@@ -1,0 +1,14 @@
+#messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+#messages::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 999px;
+}
+
+.chat-bubble {
+    max-width: 75%;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}

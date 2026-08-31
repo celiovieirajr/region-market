@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatBot IA - Mural</title>
+    <script>
+        (function () {
+            var stored = localStorage.getItem('chatbot_theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (stored ? stored === 'dark' : prefersDark) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' };</script>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 min-h-screen flex flex-col transition-colors">
+
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center">
+                    <span class="text-white text-lg">📋</span>
+                </div>
+                <div>
+                    <h1 class="font-semibold text-slate-800 dark:text-slate-100 leading-tight">Mural — v1.1.0</h1>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 leading-tight">Logado como <span id="current-user" class="font-medium"></span></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" title="Alternar tema claro/escuro"
+                        class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-lg">
+                    🌙
+                </button>
+                <a href="/index.html" title="Voltar ao chat"
+                   class="text-sm px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    ← Voltar ao chat
+                </a>
+                <button id="logout-btn" title="Sair"
+                        class="text-sm px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 transition-colors">
+                    Sair
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 space-y-4">
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div class="flex items-center justify-between mb-1">
+                <h2 class="font-semibold text-slate-800 dark:text-slate-100">⚡ v1.1.0 — Cache inteligente de preços</h2>
+                <span class="text-xs px-2 py-1 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400 font-medium">Concluído hoje</span>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+                Respostas de preço agora podem vir de um cache estruturado por produto (nome, preço, loja) em vez
+                de raspar o site ao vivo toda vez — muito mais rápido quando o cache está quente, com fallback
+                automático e transparente pra busca em tempo real quando não está. Corrigido também um bug de
+                login que não mostrava erro com senha errada.
+            </p>
+        </div>
+
+        <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="font-semibold text-slate-700 dark:text-slate-200 mb-3">⚡ Cache de preços (novo)</h3>
+            <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 list-disc list-inside">
+                <li>Nova tabela de produtos em cache (nome, preço, categoria, loja) alimentada por um job automático a cada 30min, com espaçamento entre buscas pra não sobrecarregar os sites</li>
+                <li>Configurável por mercado em Configurações: liga/desliga cache, ajusta validade (TTL em horas), e botão "Atualizar agora" pra forçar refresh manual</li>
+                <li>Habilitado hoje pra Supermercados Rondon, Atacadão e Pão de Açúcar (Amigão e Assaí não têm busca por produto, ficam de fora)</li>
+                <li>Guarda de segurança: conteúdo que parece página de verificação anti-robô nunca é salvo no cache — se acontecer, o sistema cai automaticamente na busca ao vivo pra aquele produto/loja, sem mostrar erro pro usuário</li>
+                <li>Cache ausente ou vencido é sempre coberto pela busca em tempo real de hoje — nada quebra se o cache não estiver disponível</li>
+            </ul>
+        </section>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div class="flex items-center justify-between mb-1">
+                <h2 class="font-semibold text-slate-800 dark:text-slate-100">🚀 v1.0.0 — Lançamento inicial</h2>
+                <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">Base do sistema</span>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+                Resumo de tudo que foi construído: chat com IA (DeepSeek), login/cadastro com JWT, pesquisa de
+                preços em tempo real em mercados de Araçatuba/SP via navegador headless, e painéis de
+                administração.
+            </p>
+        </div>
+
+        <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="font-semibold text-slate-700 dark:text-slate-200 mb-3">🔐 Autenticação e contas</h3>
+            <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 list-disc list-inside">
+                <li>Login JWT completo (usuário/senha, BCrypt, token com expiração de 24h)</li>
+                <li>Cadastro grátis auto-serviço direto do chat público — visitante digita, é obrigado a criar conta antes da IA responder</li>
+                <li>Roles <strong>ADMIN</strong> e <strong>USER</strong> — só admin vê Configurações e Mural</li>
+                <li>Usuário admin/admin123 semeado no boot</li>
+            </ul>
+        </section>
+
+        <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="font-semibold text-slate-700 dark:text-slate-200 mb-3">💬 Chat com IA</h3>
+            <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 list-disc list-inside">
+                <li>Integração com DeepSeek (API compatível OpenAI) para respostas em português</li>
+                <li>Histórico de conversa persistido por usuário, com opção de limpar contexto (com modal de confirmação)</li>
+                <li>Cronômetro ao vivo durante o processamento ("IA está digitando... Xs"), com tempo final registrado em cada resposta</li>
+                <li>Tema claro/escuro em todas as páginas, com preferência salva por navegador</li>
+            </ul>
+        </section>
+
+        <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="font-semibold text-slate-700 dark:text-slate-200 mb-3">🛒 Pesquisa de preços em tempo real</h3>
+            <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 list-disc list-inside">
+                <li>Usuário define sua cidade no perfil (sem precisar digitar toda vez)</li>
+                <li>Admin cadastra sites por cidade em Configurações, com busca dinâmica por produto via placeholder <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">{termo}</code></li>
+                <li>Navegador headless real (Playwright/Chromium) lê o preço já renderizado — funciona em sites React/Angular que só mostram preço via JS</li>
+                <li>5 mercados de Araçatuba/SP cadastrados: Supermercados Rondon, Atacadão (via API GraphQL pública), Pão de Açúcar, Amigão e Assaí (estes dois últimos só como referência, sem busca por produto)</li>
+                <li>Resposta da IA sempre separada por loja, ignorando mercados sem resultado (sem poluir com "não encontrado")</li>
+                <li>Espera adaptativa (aguarda o conteúdo da página estabilizar) em vez de tempo fixo — mais rápido e mais confiável</li>
+            </ul>
+        </section>
+
+        <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="font-semibold text-slate-700 dark:text-slate-200 mb-3">🏗️ Arquitetura</h3>
+            <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1.5 list-disc list-inside">
+                <li>Backend: Java 21, Spring Boot 3.3, Maven, Spring Security, Spring Data JPA, Liquibase, H2</li>
+                <li>Frontend: HTML/CSS/JS puro + Tailwind, MVC (model/view/controller), servido separado do backend</li>
+                <li>Frontend e backend rodam em servidores/portas diferentes (5500 e 8080), prontos pra deploy separado</li>
+                <li>CORS liberado para comunicação entre os dois</li>
+            </ul>
+        </section>
+
+        <section class="bg-amber-50 dark:bg-amber-950/40 rounded-2xl shadow-sm border border-amber-200 dark:border-amber-900 p-5">
+            <h3 class="font-semibold text-amber-800 dark:text-amber-300 mb-3">⚠️ Limitações conhecidas</h3>
+            <ul class="text-sm text-amber-700 dark:text-amber-400 space-y-1.5 list-disc list-inside">
+                <li>Amigão e Assaí não têm busca dinâmica por produto (sites institucionais/exigem sessão) — ficam como referência estática</li>
+                <li>Pão de Açúcar pode sofrer bloqueio anti-bot intermitente sob rajada de requisições — quando acontece, o produto fica sem cache naquela rodada e a busca cai pro modo ao vivo normalmente (não é tratado como erro)</li>
+                <li>H2 em arquivo é só para desenvolvimento — produção precisa de Postgres/MySQL gerenciado</li>
+                <li>Playwright roda numa única thread — buscas concorrentes esperam na fila (sem paralelismo ainda)</li>
+                <li>Não pronto para Vercel (serverless) — precisa de um host com processo persistente (Railway, Render, VM/Docker)</li>
+            </ul>
+        </section>
+
+        <section class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <h3 class="font-semibold text-slate-700 dark:text-slate-200 mb-2">📚 Documentação completa</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+                Toda a base de conhecimento técnico (decisões, arquitetura, limitações detalhadas) está na pasta
+                <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">memory/</code> na raiz do projeto —
+                fonte que a IA usa para continuar o desenvolvimento.
+            </p>
+        </section>
+
+    </main>
+
+    <script src="js/model/apiModel.js"></script>
+    <script src="js/controller/themeController.js"></script>
+    <script src="js/controller/muralController.js"></script>
+</body>
+</html>
